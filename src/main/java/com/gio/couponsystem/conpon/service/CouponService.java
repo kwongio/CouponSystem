@@ -12,11 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class CouponService {
     private final CouponRepository couponRepository;
     private final CouponValidator couponValidator;
-
 
     @Transactional
     public Coupon create(CouponCreateRequest request) {
@@ -28,5 +26,12 @@ public class CouponService {
     public Coupon getCoupon(Long couponId) {
         return couponRepository.findById(couponId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.COUPON_NOT_FOUND));
+    }
+
+    public synchronized void assignCoupon(Long couponId) {
+        Coupon coupon = couponRepository.findById(couponId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.COUPON_NOT_FOUND));
+        coupon.assign();
+        couponRepository.save(coupon);
     }
 }

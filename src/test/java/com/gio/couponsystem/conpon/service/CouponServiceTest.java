@@ -8,19 +8,85 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-@Transactional
 class CouponServiceTest {
 
     @Autowired
     private CouponService couponService;
+
+    @DisplayName("쿠폰 할당  테스트")
+    @Test
+    void assign() {
+        // Given
+        int initialQuantity = 100;
+        CouponCreateRequest request = new CouponCreateRequest(
+                "Discount Coupon",
+                initialQuantity,
+                LocalDateTime.now().plusDays(1),
+                LocalDateTime.now().plusDays(10)
+        );
+        Coupon coupon = couponService.create(request);
+        Long couponId = coupon.getId();
+
+        // When
+        couponService.assignCoupon(couponId);
+
+        // Then
+        Coupon updatedCoupon = couponService.getCoupon(couponId);
+        assertThat(updatedCoupon.getQuantity()).isEqualTo(initialQuantity - 1);
+    }
+
+
+    @DisplayName("쿠폰 할당 동시성 테스트")
+    @Test
+    void assignRaceConditionTest() throws InterruptedException {
+        // Given
+        int initialQuantity = 100;
+        CouponCreateRequest request = new CouponCreateRequest(
+                "Discount Coupon",
+                initialQuantity,
+                LocalDateTime.now().plusDays(1),
+                LocalDateTime.now().plusDays(10)
+        );
+        Coupon coupon = couponService.create(request);
+        Long couponId = coupon.getId();
+
+        // When
+        int numberOfThreads = 100; // 동시에 실행할 스레드 수
+        ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
+        CountDownLatch latch = new CountDownLatch(numberOfThreads); // 모든 스레드가 준비된 후 시작
+
+        for (int i = 0; i < numberOfThreads; i++) {
+            executorService.submit(() -> {
+                try {
+                    couponService.assignCoupon(couponId); // 쿠폰 할당 메서드 호출
+                } catch (Exception e) {
+                    // 예외 발생 시 로그 출력
+                    System.err.println("Error during coupon assignment: " + e.getMessage());
+                } finally {
+                    latch.countDown(); // 스레드 작업 완료 시 카운트 감소
+                }
+            });
+        }
+
+        latch.await(); // 모든 스레드가 완료될 때까지 대기
+        executorService.shutdown();
+
+        // Then
+        Coupon updatedCoupon = couponService.getCoupon(couponId);
+        System.out.println("Remaining quantity: " + updatedCoupon.getQuantity());
+        assertThat(updatedCoupon.getQuantity()).isEqualTo(0); // 남은 수량이 음수가 되지 않는지 확인
+    }
+
 
     @DisplayName("쿠폰 생성 테스트")
     @Test
@@ -156,5 +222,6 @@ class CouponServiceTest {
 
         assertThat(exception.getExceptionCode()).isEqualTo(ExceptionCode.COUPON_INVALID_TITLE);
     }
+
 
 }

@@ -25,7 +25,14 @@ public class CouponController implements CouponSwaggerController {
     }
 
     @GetMapping("/{couponId}")
-    public ResponseEntity<CouponCreateResponse> getCoupon(@PathVariable("couponId") Long couponId) {
+    public ResponseEntity<CouponQueryResponse> getCoupon(@PathVariable("couponId") Long couponId) {
         return ResponseEntity.ok(CouponQueryResponse.from(couponService.getCoupon(couponId)));
+    }
+
+
+    @PostMapping("/{couponId}/assign")
+    public ResponseEntity<String> assignCoupon(@PathVariable("couponId") Long couponId) {
+        couponService.assignCoupon(couponId);
+        return ResponseEntity.ok("Coupon assigned successfully.");
     }
 }

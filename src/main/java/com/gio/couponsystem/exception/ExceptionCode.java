@@ -13,7 +13,8 @@ public enum ExceptionCode {
     COUPON_INVALID_DATE("Coupon-0003", HttpStatus.BAD_REQUEST, "만료일은 시작일보다 빠를 수 없습니다."),
     COUPON_INVALID_TITLE("Coupon-0004", HttpStatus.BAD_REQUEST, "쿠폰 제목은 100자 이하로 입력해야 합니다."),
     COUPON_EMPTY_TITLE("Coupon-0005", HttpStatus.BAD_REQUEST, "쿠폰 제목은 1자 이상 입력해야 합니다."),
-    ;
+    COUPON_OUT_OF_STOCK("Coupon-0006", HttpStatus.BAD_REQUEST, "쿠폰이 모두 소진되었습니다.");
+
     private final String code;
     private final HttpStatus status;
     private final String message;

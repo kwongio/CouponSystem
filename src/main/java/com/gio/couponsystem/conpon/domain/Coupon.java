@@ -1,5 +1,7 @@
 package com.gio.couponsystem.conpon.domain;
 
+import com.gio.couponsystem.exception.CustomException;
+import com.gio.couponsystem.exception.ExceptionCode;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -49,5 +51,13 @@ public class Coupon {
         this.startDate = startDate;
         this.endDate = endDate;
         this.createdAt = createdAt;
+    }
+
+    public void assign() {
+        if (quantity <= 0) {
+            throw new CustomException(ExceptionCode.COUPON_OUT_OF_STOCK);
+        }
+        System.out.println("asdf: " + quantity);
+        this.quantity--;
     }
 }

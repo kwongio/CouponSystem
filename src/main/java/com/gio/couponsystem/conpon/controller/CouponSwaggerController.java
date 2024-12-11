@@ -2,6 +2,7 @@ package com.gio.couponsystem.conpon.controller;
 
 import com.gio.couponsystem.conpon.dto.CouponCreateRequest;
 import com.gio.couponsystem.conpon.dto.CouponCreateResponse;
+import com.gio.couponsystem.conpon.dto.CouponQueryResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,5 +20,10 @@ public interface CouponSwaggerController {
 
     @Operation(summary = "선착순 쿠폰 조회")
     @ApiResponse(responseCode = "200", description = "선착순 쿠폰 조회 성공")
-    ResponseEntity<CouponCreateResponse> getCoupon(@PathVariable Long couponId);
+    ResponseEntity<CouponQueryResponse> getCoupon(@PathVariable("couponId") Long couponId);
+
+
+    @Operation(summary = "선착순 쿠폰 할당")
+    @ApiResponse(responseCode = "200", description = "선착순 쿠폰 할당 성공")
+    ResponseEntity<String> assignCoupon(@PathVariable("couponId") Long couponId);
 }

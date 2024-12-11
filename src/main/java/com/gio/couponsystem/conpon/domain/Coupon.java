@@ -42,10 +42,12 @@ public class Coupon {
     private LocalDateTime createdAt;
 
     @Builder
-    public Coupon(String title, long quantity, LocalDateTime startDate, LocalDateTime endDate) {
+    public Coupon(Long id, String title, long quantity, LocalDateTime startDate, LocalDateTime endDate, LocalDateTime createdAt) {
+        this.id = id;
         this.title = title;
         this.quantity = quantity;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.createdAt = createdAt;
     }
 }

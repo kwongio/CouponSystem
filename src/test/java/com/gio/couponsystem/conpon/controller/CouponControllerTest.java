@@ -44,9 +44,6 @@ class CouponControllerTest {
                 LocalDateTime.now().plusDays(10)
         );
 
-
-        couponService.create(request);
-
         // When & Then
         mockMvc.perform(post("/coupons")
                         .contentType(MediaType.APPLICATION_JSON)

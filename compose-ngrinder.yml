@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  controller:
+    image: ngrinder/controller:3.5.5
+    container_name: ngrinder-controller
+    restart: always
+    ports:
+      - "9000:80"         # Web UI 포트
+      - "16001:16001"     # Controller와 Agent 간 통신 포트
+      - "12000-12009:12000-12009" # 테스트 통신 포트
+    volumes:
+      - ./ngrinder-controller:/opt/ngrinder-controller
+
+  agent-1:
+    image: ngrinder/agent:3.5.5
+    container_name: ngrinder-agent-1
+    restart: always
+    environment:
+      - CONTROLLER_HOST=ngrinder-controller
+    depends_on:
+      - controller
+
+  agent-2:
+    image: ngrinder/agent:3.5.5
+    container_name: ngrinder-agent-2
+    restart: always
+    environment:
+      - CONTROLLER_HOST=ngrinder-controller
+    depends_on:
+      - controller
+
+  agent-3:
+    image: ngrinder/agent:3.5.5
+    container_name: ngrinder-agent-3
+    restart: always
+    environment:
+      - CONTROLLER_HOST=ngrinder-controller
+    depends_on:
+      - controller

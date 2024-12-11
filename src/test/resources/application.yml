@@ -19,8 +19,8 @@ spring:
         format_sql: true
     open-in-view: false
 
-logging:
-  level:
-    org.hibernate.SQL: debug
-    org.hibernate.type: trace
-    org.example.file_test: debug
+#logging:
+#  level:
+#    org.hibernate.SQL: debug
+#    org.hibernate.type: trace
+#    org.example.file_test: debug

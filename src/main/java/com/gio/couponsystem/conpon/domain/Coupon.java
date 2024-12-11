@@ -57,7 +57,6 @@ public class Coupon {
         if (quantity <= 0) {
             throw new CustomException(ExceptionCode.COUPON_OUT_OF_STOCK);
         }
-        System.out.println("asdf: " + quantity);
         this.quantity--;
     }
 }

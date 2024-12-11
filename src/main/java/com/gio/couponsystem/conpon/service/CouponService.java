@@ -10,11 +10,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
+
 @Service
 @RequiredArgsConstructor
 public class CouponService {
     private final CouponRepository couponRepository;
     private final CouponValidator couponValidator;
+
+    private final ConcurrentHashMap<Long, ReentrantLock> locks = new ConcurrentHashMap<>();
 
     @Transactional
     public Coupon create(CouponCreateRequest request) {
@@ -28,10 +33,16 @@ public class CouponService {
                 .orElseThrow(() -> new CustomException(ExceptionCode.COUPON_NOT_FOUND));
     }
 
-    public synchronized void assignCoupon(Long couponId) {
-        Coupon coupon = couponRepository.findById(couponId)
-                .orElseThrow(() -> new CustomException(ExceptionCode.COUPON_NOT_FOUND));
-        coupon.assign();
-        couponRepository.save(coupon);
+    public void assignCoupon(Long couponId) {
+        ReentrantLock lock = locks.computeIfAbsent(couponId, k -> new ReentrantLock());
+        lock.lock();
+        try {
+            Coupon coupon = couponRepository.findById(couponId)
+                    .orElseThrow(() -> new CustomException(ExceptionCode.COUPON_NOT_FOUND));
+            coupon.assign();
+            couponRepository.save(coupon);
+        } finally {
+            lock.unlock();
+        }
     }
 }

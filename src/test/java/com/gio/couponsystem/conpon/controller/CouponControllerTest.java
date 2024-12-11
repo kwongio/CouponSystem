@@ -3,6 +3,7 @@ package com.gio.couponsystem.conpon.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gio.couponsystem.conpon.dto.CouponCreateRequest;
 import com.gio.couponsystem.conpon.service.CouponService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -34,6 +35,7 @@ class CouponControllerTest {
     private CouponService couponService;
 
 
+    @DisplayName("쿠폰 생성 테스트")
     @Test
     void createCoupon() throws Exception {
         // Given
@@ -53,6 +55,7 @@ class CouponControllerTest {
                 .andExpect(jsonPath("$.quantity", is(1000)));
     }
 
+    @DisplayName("쿠폰 조회 테스트")
     @Test
     void getCoupon() throws Exception {
         // Given

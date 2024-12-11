@@ -1,6 +1,7 @@
 package com.gio.couponsystem.conpon.dto;
 
 import com.gio.couponsystem.conpon.domain.Coupon;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,9 +22,7 @@ public class CouponCreateRequest {
     private long quantity;
 
     @NotNull(message = "시작일은 필수입니다.")
-    @Future(message = "시작일은 현재 시간 이후여야 합니다.")
     private LocalDateTime startDate;
-
 
     @NotNull(message = "종료일은 필수입니다.")
     @Future(message = "종료일은 현재 시간 이후여야 합니다.")
@@ -43,5 +42,15 @@ public class CouponCreateRequest {
                 .startDate(startDate)
                 .endDate(endDate)
                 .build();
+    }
+
+
+    @AssertTrue(message = "종료일은 시작일 이후여야 합니다.")
+    @Schema(hidden = true) // Swagger 문서에서 숨김 처리
+    public boolean isEndDateAfterStartDate() {
+        if (startDate == null || endDate == null) {
+            return true; // NotNull 검증이 우선 처리됨
+        }
+        return endDate.isAfter(startDate);
     }
 }

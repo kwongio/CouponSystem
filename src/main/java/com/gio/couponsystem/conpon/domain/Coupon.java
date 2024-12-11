@@ -5,12 +5,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Coupon {
 
     @Id
@@ -33,6 +36,10 @@ public class Coupon {
     @Column(nullable = false, columnDefinition = "TIMESTAMP NOT NULL")
     @Comment("쿠폰 유효 종료일")
     private LocalDateTime endDate;
+
+    @Comment("쿠폰 생성일")
+    @CreatedDate
+    private LocalDateTime createdAt;
 
     @Builder
     public Coupon(String title, long quantity, LocalDateTime startDate, LocalDateTime endDate) {

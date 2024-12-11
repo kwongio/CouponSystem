@@ -25,13 +25,14 @@ public record CouponQueryResponse(
         @Schema(description = "쿠폰 생성 날짜", example = "2023-11-01T12:00:00")
         LocalDateTime createdAt
 ) {
-    public static CouponCreateResponse from(Coupon coupon) {
-        return new CouponCreateResponse(
+    public static CouponQueryResponse from(Coupon coupon) {
+        return new CouponQueryResponse(
                 coupon.getId(),
                 coupon.getTitle(),
                 coupon.getQuantity(),
                 coupon.getStartDate(),
-                coupon.getEndDate()
+                coupon.getEndDate(),
+                coupon.getCreatedAt()
         );
     }
 }

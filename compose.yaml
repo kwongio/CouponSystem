@@ -1,15 +1,19 @@
 services:
   mysql:
     image: 'mysql:latest'
+    container_name: 'mysql-container'
     environment:
-      - 'MYSQL_DATABASE=CouponSystem'
-      - 'MYSQL_PASSWORD=1234'
-      - 'MYSQL_ROOT_PASSWORD=1234'
-      - 'MYSQL_USER=root'
+      - 'MYSQL_ROOT_PASSWORD=1234'       # 루트 계정 암호
+      - 'MYSQL_DATABASE=CouponSystem'    # 기본 데이터베이스
     ports:
-      - '3306:3306'
+      - '3306:3306'                      # 기본 DB를 위한 포트
 
-#  redis:
-#    image: 'redis:latest'
-#    ports:
-#      - '6379'
+
+  mysql-test:
+    image: 'mysql:latest'
+    container_name: 'mysql-test-container'
+    environment:
+      - 'MYSQL_ROOT_PASSWORD=1234'       # 루트 계정 암호
+      - 'MYSQL_DATABASE=CouponSystemTest' # 테스트 데이터베이스
+    ports:
+      - '3307:3306'                      # 테스트 DB를 위한 포트

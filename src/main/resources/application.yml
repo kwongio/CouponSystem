@@ -32,7 +32,7 @@ logging:
 
 springdoc:
   # Swagger에서 문서화할 패키지 설정
-  packages-to-scan: com.gio.couponSystem
+  packages-to-scan: com.gio.couponsystem
 
   # 기본 소비 미디어 타입 설정 (요청 데이터 타입)
   default-consumes-media-type: application/json;charset=UTF-8 # UTF-8로 JSON 데이터 인코딩
@@ -43,13 +43,13 @@ springdoc:
   # OpenAPI 문서 경로 및 그룹화 설정
   api-docs:
     path: /api # OpenAPI 문서를 제공할 기본 경로 (예: /api 또는 /v3/api-docs)
-    groups:
-      enabled: true # 그룹화 기능 활성화
-      group-configs:
-        - group: coupons # 쿠폰 관련 API 그룹
-          paths-to-match: /coupons/** # 쿠폰 관련 API 경로를 문서화
-        - group: users # 사용자 관련 API 그룹
-          paths-to-match: /users/** # 사용자 관련 API 경로를 문서화
+#    groups:
+#      enabled: true # 그룹화 기능 활성화
+#      group-configs:
+#        - group: coupons # 쿠폰 관련 API 그룹
+#          paths-to-match: /coupons/** # 쿠폰 관련 API 경로를 문서화
+#        - group: users # 사용자 관련 API 그룹
+#          paths-to-match: /users/** # 사용자 관련 API 경로를 문서화
 
   # Swagger 캐시 설정
   cache:

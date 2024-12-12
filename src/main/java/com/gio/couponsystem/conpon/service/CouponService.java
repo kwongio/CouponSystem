@@ -7,19 +7,16 @@ import com.gio.couponsystem.conpon.validator.CouponValidator;
 import com.gio.couponsystem.exception.CustomException;
 import com.gio.couponsystem.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
-
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CouponService {
     private final CouponRepository couponRepository;
     private final CouponValidator couponValidator;
-
-    private final ConcurrentHashMap<Long, ReentrantLock> locks = new ConcurrentHashMap<>();
 
     @Transactional
     public Coupon create(CouponCreateRequest request) {
@@ -33,10 +30,18 @@ public class CouponService {
                 .orElseThrow(() -> new CustomException(ExceptionCode.COUPON_NOT_FOUND));
     }
 
+
     @Transactional
     public void assignCoupon(Long couponId) {
-        Coupon coupon = couponRepository.findByIdWithLock(couponId)
-                .orElseThrow(() -> new CustomException(ExceptionCode.COUPON_NOT_FOUND));
-        coupon.assign();
+        int updatedRows = couponRepository.decrementCouponQuantity(couponId);
+        if (updatedRows == 0) {
+            throw new CustomException(ExceptionCode.COUPON_OUT_OF_STOCK);
+        }
     }
+//    @Transactional
+//    public void assignCoupon(Long couponId) {
+//        Coupon coupon = couponRepository.findByIdWithLock(couponId)
+//                .orElseThrow(() -> new CustomException(ExceptionCode.COUPON_NOT_FOUND));
+//        coupon.assign();
+//    }
 }

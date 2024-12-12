@@ -17,3 +17,9 @@ services:
       - 'MYSQL_DATABASE=CouponSystemTest' # 테스트 데이터베이스
     ports:
       - '3307:3306'                      # 테스트 DB를 위한 포트
+
+  redis:
+    image: 'redis:latest'
+    container_name: 'redis-container'
+    ports:
+      - '6379:6379'                      # Redis를 위한 포트

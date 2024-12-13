@@ -1,4 +1,6 @@
+version: '3.8'
 services:
+  # MySQL 설정
   mysql:
     image: 'mysql:latest'
     container_name: 'mysql-container'
@@ -7,8 +9,10 @@ services:
       - 'MYSQL_DATABASE=CouponSystem'    # 기본 데이터베이스
     ports:
       - '3306:3306'                      # 기본 DB를 위한 포트
+#    volumes:
+#      - mysql-data:/var/lib/mysql        # 데이터 지속성을 위한 볼륨
 
-
+  # 테스트용 MySQL 설정
   mysql-test:
     image: 'mysql:latest'
     container_name: 'mysql-test-container'
@@ -17,9 +21,18 @@ services:
       - 'MYSQL_DATABASE=CouponSystemTest' # 테스트 데이터베이스
     ports:
       - '3307:3306'                      # 테스트 DB를 위한 포트
+#    volumes:
+#      - mysql-test-data:/var/lib/mysql   # 데이터 지속성을 위한 볼륨
 
+  # Redis 설정
   redis:
     image: 'redis:latest'
     container_name: 'redis-container'
     ports:
       - '6379:6379'                      # Redis를 위한 포트
+    command: redis-server --save "" --appendonly no
+    # 메모리 기반 설정: RDB와 AOF를 비활성화
+
+#volumes:
+#  mysql-data:      # MySQL 데이터 저장
+#  mysql-test-data: # 테스트용 MySQL 데이터 저장

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @Hidden
 @RestControllerAdvice
@@ -34,7 +35,8 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ValidationExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ValidationExceptionResponse> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException e) {
         Map<String, String> validationErrors = getValidationErrors(e);
 
         ValidationExceptionResponse response = ValidationExceptionResponse.builder()
@@ -49,12 +51,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    private  Map<String, String> getValidationErrors(MethodArgumentNotValidException e) {
+    private Map<String, String> getValidationErrors(MethodArgumentNotValidException e) {
         Map<String, String> validationErrors = new HashMap<>();
         for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
             validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
         return validationErrors;
     }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public void handleNoResourceFoundException(NoResourceFoundException e) {
+        log.warn("Resource not found: {}", e.getMessage());
+    }
+
 }
 

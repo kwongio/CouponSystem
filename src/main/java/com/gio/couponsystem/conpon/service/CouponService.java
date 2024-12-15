@@ -2,6 +2,8 @@ package com.gio.couponsystem.conpon.service;
 
 import com.gio.couponsystem.conpon.domain.Coupon;
 import com.gio.couponsystem.conpon.dto.CouponCreateRequest;
+import com.gio.couponsystem.conpon.repository.CouponAssignRequest;
+import com.gio.couponsystem.conpon.repository.CouponProducer;
 import com.gio.couponsystem.conpon.repository.CouponRepository;
 import com.gio.couponsystem.conpon.validator.CouponValidator;
 import com.gio.couponsystem.exception.CustomException;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CouponService {
     private final CouponRepository couponRepository;
     private final CouponValidator couponValidator;
+    private final CouponProducer couponProducer;
 
     @Transactional
     public Coupon create(CouponCreateRequest request) {
@@ -30,18 +33,11 @@ public class CouponService {
                 .orElseThrow(() -> new CustomException(ExceptionCode.COUPON_NOT_FOUND));
     }
 
-
-    @Transactional
     public void assignCoupon(Long couponId) {
-        int updatedRows = couponRepository.decrementCouponQuantity(couponId);
-        if (updatedRows == 0) {
-            throw new CustomException(ExceptionCode.COUPON_OUT_OF_STOCK);
-        }
+        couponProducer.sendAssignCouponRequest(new CouponAssignRequest(couponId));
     }
-//    @Transactional
-//    public void assignCoupon(Long couponId) {
-//        Coupon coupon = couponRepository.findByIdWithLock(couponId)
-//                .orElseThrow(() -> new CustomException(ExceptionCode.COUPON_NOT_FOUND));
-//        coupon.assign();
-//    }
+
+    private boolean isOutOfStock(int remainingCoupons) {
+        return remainingCoupons <= 0;
+    }
 }

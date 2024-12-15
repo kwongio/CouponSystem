@@ -1,16 +1,18 @@
 package com.gio.couponsystem.conpon.domain;
 
-import com.gio.couponsystem.exception.CustomException;
-import com.gio.couponsystem.exception.ExceptionCode;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -53,10 +55,4 @@ public class Coupon {
         this.createdAt = createdAt;
     }
 
-    public void assign() {
-        if (quantity <= 0) {
-            throw new CustomException(ExceptionCode.COUPON_OUT_OF_STOCK);
-        }
-        this.quantity--;
-    }
 }

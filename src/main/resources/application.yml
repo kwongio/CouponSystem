@@ -5,9 +5,22 @@ spring:
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  kafka:
+    bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+
+#  data:
+#    redis:
+#      host: localhost
+#      port: 6379
+
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: UTC
+
   jpa:
     hibernate:
       ddl-auto: create
@@ -16,13 +29,14 @@ spring:
         default_batch_fetch_size: 1000
         use_sql_comments: true
         format_sql: true
-#        show_sql: true 이거 키면 SQL 두번 나옴
+    #        show_sql: true 이거 키면 SQL 두번 나옴
     open-in-view: false
     defer-datasource-initialization: true
 
   sql:
     init:
       mode: always
+
 
 logging:
   level:
@@ -43,13 +57,13 @@ springdoc:
   # OpenAPI 문서 경로 및 그룹화 설정
   api-docs:
     path: /api # OpenAPI 문서를 제공할 기본 경로 (예: /api 또는 /v3/api-docs)
-#    groups:
-#      enabled: true # 그룹화 기능 활성화
-#      group-configs:
-#        - group: coupons # 쿠폰 관련 API 그룹
-#          paths-to-match: /coupons/** # 쿠폰 관련 API 경로를 문서화
-#        - group: users # 사용자 관련 API 그룹
-#          paths-to-match: /users/** # 사용자 관련 API 경로를 문서화
+  #    groups:
+  #      enabled: true # 그룹화 기능 활성화
+  #      group-configs:
+  #        - group: coupons # 쿠폰 관련 API 그룹
+  #          paths-to-match: /coupons/** # 쿠폰 관련 API 경로를 문서화
+  #        - group: users # 사용자 관련 API 그룹
+  #          paths-to-match: /users/** # 사용자 관련 API 경로를 문서화
 
   # Swagger 캐시 설정
   cache:

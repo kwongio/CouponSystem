@@ -20,7 +20,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ServerExceptionResponse> handleException(Exception e) {
+    public ResponseEntity<ServerExceptionResponse> serverException(Exception e) {
         ServerExceptionResponse response = ServerExceptionResponse.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .error("Internal Server Error")
@@ -29,13 +29,24 @@ public class GlobalExceptionHandler {
                 .build();
 
         log.error("Exception occurred: {}", e.getMessage(), e);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ServerExceptionResponse> customException(CustomException e) {
+        ServerExceptionResponse response = ServerExceptionResponse.builder()
+                .status(e.getExceptionCode().getStatus().value())
+                .error(e.getExceptionCode().getStatus().getReasonPhrase())
+                .message(e.getExceptionCode().getMessage())
+                .timestamp(System.currentTimeMillis())
+                .build();
+        log.error("Exception occurred: {}", e.getMessage(), e);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ValidationExceptionResponse> handleMethodArgumentNotValidException(
+    public ResponseEntity<ValidationExceptionResponse> validationException(
             MethodArgumentNotValidException e) {
         Map<String, String> validationErrors = getValidationErrors(e);
 
@@ -60,7 +71,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
-    public void handleNoResourceFoundException(NoResourceFoundException e) {
+    public void noResourceFoundException(NoResourceFoundException e) {
         log.warn("Resource not found: {}", e.getMessage());
     }
 

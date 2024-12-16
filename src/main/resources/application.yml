@@ -5,17 +5,10 @@ spring:
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-  kafka:
-    bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-      acks: all
-
-#  data:
-#    redis:
-#      host: localhost
-#      port: 6379
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss

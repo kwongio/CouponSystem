@@ -8,8 +8,10 @@ import com.gio.couponsystem.conpon.repository.CouponRepository;
 import com.gio.couponsystem.conpon.validator.CouponValidator;
 import com.gio.couponsystem.exception.CustomException;
 import com.gio.couponsystem.exception.ExceptionCode;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,7 @@ public class CouponService {
     private final CouponRepository couponRepository;
     private final CouponValidator couponValidator;
     private final CouponProducer couponProducer;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional
     public Coupon create(CouponCreateRequest request) {
@@ -34,10 +37,12 @@ public class CouponService {
     }
 
     public void assignCoupon(Long couponId) {
-        couponProducer.sendAssignCouponRequest(new CouponAssignRequest(couponId));
-    }
-
-    private boolean isOutOfStock(int remainingCoupons) {
-        return remainingCoupons <= 0;
+        Long decrement = redisTemplate.opsForValue().decrement("coupon:" + couponId);
+        log.info("remain coupon: {}", decrement);
+        if (decrement != null && decrement >= 0) {
+            couponProducer.sendAssignCouponRequest(new CouponAssignRequest(couponId, UUID.randomUUID()));
+        } else {
+            throw new CustomException(ExceptionCode.COUPON_OUT_OF_STOCK);
+        }
     }
 }

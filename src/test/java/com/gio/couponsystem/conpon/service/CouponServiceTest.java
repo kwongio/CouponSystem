@@ -4,6 +4,7 @@ import com.gio.couponsystem.conpon.domain.Coupon;
 import com.gio.couponsystem.conpon.dto.CouponCreateRequest;
 import com.gio.couponsystem.exception.CustomException;
 import com.gio.couponsystem.exception.ExceptionCode;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ class CouponServiceTest {
     @Autowired
     private CouponService couponService;
 
+    @Disabled("Redis 연동해야함 테스트 비활성화")
     @DisplayName("쿠폰 할당  테스트")
     @Test
     void assign() {
@@ -45,7 +47,7 @@ class CouponServiceTest {
         assertThat(updatedCoupon.getQuantity()).isEqualTo(initialQuantity - 1);
     }
 
-
+    @Disabled("Redis 연동해야함 테스트 비활성화")
     @DisplayName("쿠폰 할당 동시성 테스트")
     @Test
     void assignRaceConditionTest() throws InterruptedException {

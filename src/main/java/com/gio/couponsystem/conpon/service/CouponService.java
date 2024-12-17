@@ -8,6 +8,8 @@ import com.gio.couponsystem.conpon.repository.CouponRepository;
 import com.gio.couponsystem.conpon.validator.CouponValidator;
 import com.gio.couponsystem.exception.CustomException;
 import com.gio.couponsystem.exception.ExceptionCode;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,7 @@ public class CouponService {
     private final CouponValidator couponValidator;
     private final CouponProducer couponProducer;
     private final RedisTemplate<String, String> redisTemplate;
+    private final MeterRegistry meterRegistry;
 
     @Transactional
     public Coupon create(CouponCreateRequest request) {
@@ -39,6 +42,13 @@ public class CouponService {
     public void assignCoupon(Long couponId) {
         Long decrement = redisTemplate.opsForValue().decrement("coupon:" + couponId);
         log.info("remain coupon: {}", decrement);
+
+        Counter.builder("coupon.assign")
+                .tag("class", this.getClass().getName())
+                .tag("method", "assignCoupon")
+                .description("Coupon assign count")
+                .register(meterRegistry).increment();
+
         if (decrement != null && decrement >= 0) {
             couponProducer.sendAssignCouponRequest(new CouponAssignRequest(couponId, UUID.randomUUID()));
         } else {

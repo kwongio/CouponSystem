@@ -1,0 +1,26 @@
+global:
+  scrape_interval: 5s # 메트릭 수집 주기
+
+scrape_configs:
+  # Prometheus 자체 모니터링
+  - job_name: "prometheus"
+    static_configs:
+      - targets:
+          - "localhost:9090"
+
+  # Spring Boot 애플리케이션 모니터링
+  - job_name: "CouponSystem"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ['host.docker.internal:8080']
+
+  # MySQL Exporter 모니터링
+  - job_name: "mysql-exporter"
+    scrape_interval:
+    static_configs:
+      - targets: ['host.docker.internal:9104']
+
+  # Redis Exporter 모니터링
+  - job_name: "redis-exporter"
+    static_configs:
+      - targets: ['host.docker.internal:9121']

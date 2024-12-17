@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      # src/main/resources/prometheus.yml 파일을 Prometheus 설정 파일로 마운트
+      - ../src/main/resources/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090" # Prometheus 웹 UI 포트 매핑
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml" # 설정 파일 명시
+    restart: always
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin # Grafana 관리자 계정
+      - GF_SECURITY_ADMIN_PASSWORD=admin # Grafana 관리자 비밀번호
+    ports:
+      - "3000:3000" # Grafana 웹 UI 포트 매핑
+    volumes:
+      - grafana-data:/var/lib/grafana # Grafana 데이터 저장 볼륨
+    restart: always
+    depends_on:
+      - prometheus
+
+volumes:
+  grafana-data: # Grafana 데이터 볼륨

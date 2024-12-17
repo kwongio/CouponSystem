@@ -12,6 +12,18 @@ services:
 #    volumes:
 #      - mysql-data:/var/lib/mysql        # 데이터 지속성을 위한 볼륨
 
+  mysql-exporter:
+    container_name: mysql-exporter
+    image: prom/mysqld-exporter
+    command:
+      - "--mysqld.username=root:1234"
+      - "--mysqld.address=mysql:3306"
+    ports:
+      - "9104:9104"                       # MySQL Exporter 포트
+    depends_on:
+      - mysql
+
+
   # 테스트용 MySQL 설정
   mysql-test:
     image: 'mysql:latest'
@@ -32,6 +44,17 @@ services:
       - '6379:6379'                      # Redis를 위한 포트
     command: redis-server --save "" --appendonly no
     # 메모리 기반 설정: RDB와 AOF를 비활성화
+
+  # Redis Exporter 설정
+  redis-exporter:
+    image: 'oliver006/redis_exporter:latest'
+    container_name: 'redis-exporter'
+    environment:
+      - REDIS_ADDR=redis:6379             # Redis 컨테이너 주소
+    ports:
+      - '9121:9121'                       # Redis Exporter 포트
+    depends_on:
+      - redis
 
 #volumes:
 #  mysql-data:      # MySQL 데이터 저장

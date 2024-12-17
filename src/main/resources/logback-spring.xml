@@ -1,0 +1,73 @@
+<configuration>
+    <!-- 서버 이름 설정: Spring Context에서 server.name 가져오기 -->
+    <springProperty scope="context" name="server-name" source="server.name"/>
+
+    <!-- 콘솔 로그 출력 설정 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- 로그 패턴 설정: traceId 출력 (MDC에서 가져옴) -->
+            <!-- 레벨에 따라 색상 적용 -->
+            <pattern>
+                %d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) %magenta([%class] [%method] [%line]) traceId=%boldYellow(%X{traceId}) %msg %n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- 로그 파일 출력 설정 (색상 없이 단순 출력) -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 로그 파일 경로 -->
+        <file>logFile.log</file>
+
+        <!-- 파일 롤링 정책 설정 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 일별로 로그 파일 생성 및 압축 -->
+            <fileNamePattern>logFile.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <!-- 로그 보존 기간: 최대 31일 -->
+            <maxHistory>31</maxHistory>
+            <!-- 전체 로그 파일 최대 크기 제한 -->
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder>
+            <!-- 파일 출력: 색상 없이 간단한 패턴 -->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%class] [%method] [%line] traceId=%X{traceId} %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Logstash 로그 전송 설정 (ELK 스택을 사용할 경우) -->
+    <!--
+    <appender name="STASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>localhost:5000</destination>
+
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <pattern>
+                    <pattern>
+                        {
+                        "level": "%level",
+                        "thread" : "%thread",
+                        "logger" : "%logger",
+                        "class" : "%class",
+                        "method" : "%method",
+                        "line" : "%line",
+                        "traceId" : "%X{traceId}",
+                        "message" : "%message",
+                        "server-name" : "${server-name}"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
+    -->
+
+    <!-- 루트 로거 설정: 로그 레벨 및 출력 대상 -->
+    <root level="INFO">
+        <!-- 콘솔 출력 -->
+        <appender-ref ref="STDOUT" />
+        <!-- 파일 출력 -->
+        <appender-ref ref="FILE" />
+        <!-- Logstash 로그 전송 (ELK 설정 시 주석 해제) -->
+        <!-- <appender-ref ref="STASH" /> -->
+    </root>
+</configuration>

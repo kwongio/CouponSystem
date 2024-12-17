@@ -5,10 +5,9 @@
     <!-- 콘솔 로그 출력 설정 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <!-- 로그 패턴 설정: traceId 출력 (MDC에서 가져옴) -->
-            <!-- 레벨에 따라 색상 적용 -->
+            <!-- 로그 패턴 설정: 시간, 레벨, traceId, 간결한 클래스명, 메시지 -->
             <pattern>
-                %d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) %magenta([%class] [%method] [%line]) traceId=%boldYellow(%X{traceId}) %msg %n
+                %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{20}) traceId=%boldYellow(%X{traceId}) : %msg %n
             </pattern>
         </encoder>
     </appender>
@@ -29,37 +28,10 @@
         </rollingPolicy>
 
         <encoder>
-            <!-- 파일 출력: 색상 없이 간단한 패턴 -->
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%class] [%method] [%line] traceId=%X{traceId} %msg %n</pattern>
+            <!-- 파일 출력: traceId 포함 -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{20} traceId=%X{traceId} : %msg %n</pattern>
         </encoder>
     </appender>
-
-    <!-- Logstash 로그 전송 설정 (ELK 스택을 사용할 경우) -->
-    <!--
-    <appender name="STASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>localhost:5000</destination>
-
-        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
-            <providers>
-                <pattern>
-                    <pattern>
-                        {
-                        "level": "%level",
-                        "thread" : "%thread",
-                        "logger" : "%logger",
-                        "class" : "%class",
-                        "method" : "%method",
-                        "line" : "%line",
-                        "traceId" : "%X{traceId}",
-                        "message" : "%message",
-                        "server-name" : "${server-name}"
-                        }
-                    </pattern>
-                </pattern>
-            </providers>
-        </encoder>
-    </appender>
-    -->
 
     <!-- 루트 로거 설정: 로그 레벨 및 출력 대상 -->
     <root level="INFO">
@@ -67,7 +39,5 @@
         <appender-ref ref="STDOUT" />
         <!-- 파일 출력 -->
         <appender-ref ref="FILE" />
-        <!-- Logstash 로그 전송 (ELK 설정 시 주석 해제) -->
-        <!-- <appender-ref ref="STASH" /> -->
     </root>
 </configuration>

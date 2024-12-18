@@ -27,12 +27,12 @@ public class KafkaProducerConfig {
         configProps.put(ProducerConfig.ACKS_CONFIG, "all"); // 모든 복제 완료 후 확인
 
         // 배치 설정
-        configProps.put(ProducerConfig.LINGER_MS_CONFIG, 1000); // 최대 10ms 대기
-        configProps.put(ProducerConfig.BATCH_SIZE_CONFIG, 16 * 1024); // 16KB 배치 크기
+        configProps.put(ProducerConfig.LINGER_MS_CONFIG, 100); // 최대 100ms 대기
+        configProps.put(ProducerConfig.BATCH_SIZE_CONFIG, 1000000); // 최대 1MB 배치 크기
 
         // 재시도 및 타임아웃 설정
-        configProps.put(ProducerConfig.RETRIES_CONFIG, 5); // 실패 시 최대 5번 재시도
-        configProps.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, 30000); // 요청 타임아웃 30초
+        configProps.put(ProducerConfig.RETRIES_CONFIG, 10); // 실패 시 최대 5번 재시도
+        configProps.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, 10000); // 요청 타임아웃 10초
 
         // 압축 설정 (선택 사항)
 //        configProps.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "gzip"); // gzip으로 압축

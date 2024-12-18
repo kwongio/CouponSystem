@@ -64,6 +64,20 @@ services:
       # 클라이언트가 접근할 브로커 주소 설정
       KAFKA_MIN_INSYNC_REPLICAS: 2  # 최소 동기화 복제본 수 설정
 
+  kafka-exporter:
+    image: danielqsj/kafka-exporter
+    container_name: kafka-exporter
+    command:
+      - "--kafka.server=kafka-1:29092"
+      - "--kafka.server=kafka-2:29093"
+      - "--kafka.server=kafka-3:29094"
+    ports:
+      - "9308:9308"
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+
 
 
 #version: '2'

@@ -14,7 +14,7 @@ public class CouponConfig {
     @Bean
     ApplicationRunner applicationRunner() {
         return args -> {
-            redisTemplate.opsForValue().set("coupon:1", "10000000");
+            redisTemplate.opsForValue().set("coupon:1", "20000");
         };
     }
 }

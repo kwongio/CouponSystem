@@ -41,15 +41,13 @@ public class CouponService {
 
     public void assignCoupon(Long couponId) {
         Long decrement = redisTemplate.opsForValue().decrement("coupon:" + couponId);
-        log.info("remain coupon: {}", decrement);
-
-        Counter.builder("coupon.assign")
-                .tag("class", this.getClass().getName())
-                .tag("method", "assignCoupon")
-                .description("Coupon assign count")
-                .register(meterRegistry).increment();
-
+        log.info("Coupon {} stock: {}", couponId, decrement);
         if (decrement != null && decrement >= 0) {
+            Counter.builder("coupon.assign")
+                    .tag("class", this.getClass().getName())
+                    .tag("method", "assignCoupon")
+                    .description("Coupon assign count")
+                    .register(meterRegistry).increment();
             couponProducer.sendAssignCouponRequest(new CouponAssignRequest(couponId, UUID.randomUUID()));
         } else {
             throw new CustomException(ExceptionCode.COUPON_OUT_OF_STOCK);

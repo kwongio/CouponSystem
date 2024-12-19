@@ -12,7 +12,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 @Configuration
 public class KafkaProducerConfig {
 
-    public static final int DEFAULT_RETRY_COUNT = 10;
+    public static final int DEFAULT_RETRY_COUNT = 5;
     public static final int DEFAULT_TIME_OUT = 10000;
     public static final int DEFAULT_BATCH_SIZE = 1000000;
     public static final int DEFAULT_LINGER_MS = 100;

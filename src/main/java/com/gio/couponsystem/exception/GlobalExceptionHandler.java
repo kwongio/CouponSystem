@@ -46,8 +46,7 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ValidationExceptionResponse> validationException(
-            MethodArgumentNotValidException e) {
+    public ResponseEntity<ValidationExceptionResponse> validationException(MethodArgumentNotValidException e) {
         Map<String, String> validationErrors = getValidationErrors(e);
 
         ValidationExceptionResponse response = ValidationExceptionResponse.builder()

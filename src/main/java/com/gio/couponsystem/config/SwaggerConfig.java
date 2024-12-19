@@ -12,12 +12,10 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-// OpenAPI 정의: API 문서의 기본 정보를 설정
 @OpenAPIDefinition(
         servers = {
                 @Server(url = "http://localhost:8080", description = "dev server url"), // 개발 서버
-                @Server(url = "https://staging.example.com", description = "staging server url"), // 스테이징 서버
-                @Server(url = "https://api.example.com", description = "production server url")  // 운영 서버
+                @Server(url = "https://prod.example.com", description = "production server url")  // 운영 서버
         },
         info = @Info(
                 title = "선착순 쿠폰 시스템 API", // API 제목
@@ -28,23 +26,22 @@ import org.springframework.context.annotation.Configuration;
                 license = @License(name = "Apache 2.0", url = "https://www.apache.org/licenses/LICENSE-2.0") // 라이선스 정보
         )
 )
-@Configuration // 이 클래스가 Spring 설정 클래스임을 나타냄
+@Configuration
 public class SwaggerConfig {
 
-    // OpenAPI Bean 등록: Swagger UI 및 OpenAPI 3.0 설정
     @Bean
     public OpenAPI openAPI() {
-        return new OpenAPI()
+        return new OpenAPI();
                 // 보안 구성 요소 추가: Bearer Token 인증 설정
-                .components(new Components()
-                        .addSecuritySchemes("Bearer Token(JWT)", new SecurityScheme() // 보안 스키마 추가
-                                .type(SecurityScheme.Type.HTTP)  // HTTP 기반 인증
-                                .scheme("bearer")              // 인증 방식: Bearer Token
-                                .bearerFormat("JWT")           // 토큰 포맷: JWT
-                                .description("JWT를 이용한 Bearer 인증 방식") // 인증 방식에 대한 설명 추가
-                        )
-                )
+//                .components(new Components()
+//                        .addSecuritySchemes("Bearer Token(JWT)", new SecurityScheme() // 보안 스키마 추가
+//                                .type(SecurityScheme.Type.HTTP)  // HTTP 기반 인증
+//                                .scheme("bearer")              // 인증 방식: Bearer Token
+//                                .bearerFormat("JWT")           // 토큰 포맷: JWT
+//                                .description("JWT를 이용한 Bearer 인증 방식") // 인증 방식에 대한 설명 추가
+//                        )
+//                )
                 // 보안 요구 사항 추가: 정의된 보안 스키마를 사용하도록 설정
-                .addSecurityItem(new SecurityRequirement().addList("Bearer Token(JWT)"));
+//                .addSecurityItem(new SecurityRequirement().addList("Bearer Token(JWT)"));
     }
 }

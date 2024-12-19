@@ -9,12 +9,14 @@ import org.springframework.data.redis.core.RedisTemplate;
 @Configuration
 @RequiredArgsConstructor
 public class CouponConfig {
+    public static final String COUPON_COUNT = "20000";
+    public static final String COUPON_KEY = "coupon:1";
     private final RedisTemplate<String, String> redisTemplate;
 
     @Bean
     ApplicationRunner applicationRunner() {
         return args -> {
-            redisTemplate.opsForValue().set("coupon:1", "20000");
+            redisTemplate.opsForValue().set(COUPON_KEY, COUPON_COUNT);
         };
     }
 }

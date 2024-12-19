@@ -1,6 +1,5 @@
-package com.gio.couponsystem.conpon.repository;
+package com.gio.couponsystem.event;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CouponAssignRequest {
+public class CouponAssignEvent {
     private Long couponId;
     private UUID uuid;
 }

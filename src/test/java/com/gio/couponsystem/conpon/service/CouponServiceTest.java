@@ -4,8 +4,11 @@ import com.gio.couponsystem.conpon.domain.Coupon;
 import com.gio.couponsystem.conpon.dto.CouponCreateRequest;
 import com.gio.couponsystem.exception.CustomException;
 import com.gio.couponsystem.exception.ExceptionCode;
+import com.gio.couponsystem.redis.RedisRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,53 +17,46 @@ import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
+@Transactional
 class CouponServiceTest {
 
     @Autowired
     private CouponService couponService;
 
-    @Disabled("Redis 연동해야함 테스트 비활성화")
+    @Autowired
+    private RedisRepository redisRepository;
+
+
+    @Disabled("실패 테스트를 위해 비활성화")
     @DisplayName("쿠폰 할당  테스트")
     @Test
     void assign() {
         // Given
-        int initialQuantity = 100;
-        CouponCreateRequest request = new CouponCreateRequest(
-                "Discount Coupon",
-                initialQuantity,
-                LocalDateTime.now().plusDays(1),
-                LocalDateTime.now().plusDays(10)
-        );
-        Coupon coupon = couponService.create(request);
-        Long couponId = coupon.getId();
+        redisRepository.save("coupon:1", "20000");
+        int initialQuantity = redisRepository.get("coupon:1");
+        Long couponId = 1L;
 
         // When
         couponService.assignCoupon(couponId);
 
         // Then
-        Coupon updatedCoupon = couponService.getCoupon(couponId);
-        assertThat(updatedCoupon.getQuantity()).isEqualTo(initialQuantity - 1);
+        int remainCouponCount = redisRepository.get("coupon:1");
+        assertThat(remainCouponCount).isEqualTo(initialQuantity - 1);
     }
 
-    @Disabled("Redis 연동해야함 테스트 비활성화")
+    @Disabled("실패 테스트를 위해 비활성화")
     @DisplayName("쿠폰 할당 동시성 테스트")
     @Test
     void assignRaceConditionTest() throws InterruptedException {
         // Given
-        int initialQuantity = 100;
-        CouponCreateRequest request = new CouponCreateRequest(
-                "Discount Coupon",
-                initialQuantity,
-                LocalDateTime.now().plusDays(1),
-                LocalDateTime.now().plusDays(10)
-        );
-        Coupon coupon = couponService.create(request);
-        Long couponId = coupon.getId();
+        long couponId = 1L;
+        redisRepository.save("coupon:1", "100");
 
         // When
         int numberOfThreads = 100; // 동시에 실행할 스레드 수
@@ -84,9 +80,8 @@ class CouponServiceTest {
         executorService.shutdown();
 
         // Then
-        Coupon updatedCoupon = couponService.getCoupon(couponId);
-        System.out.println("Remaining quantity: " + updatedCoupon.getQuantity());
-        assertThat(updatedCoupon.getQuantity()).isEqualTo(0); // 남은 수량이 음수가 되지 않는지 확인
+        int remainCouponCount = redisRepository.get("coupon:1");
+        assertThat(remainCouponCount).isEqualTo(0); // 남은 수량이 음수가 되지 않는지 확인
     }
 
 

@@ -16,9 +16,12 @@ import org.springframework.stereotype.Component;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 class MDCLoggingFilter implements Filter {
 
+    public static final String TRACE_ID = "traceId";
+    public static final String TRACE_VALUE = "[" + UUID.randomUUID() + "]";
+
     @Override
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
-        MDC.put("traceId", "[" + UUID.randomUUID() + "]");
+        MDC.put(TRACE_ID, TRACE_VALUE);
         filterChain.doFilter(servletRequest, servletResponse);
         MDC.clear();
     }

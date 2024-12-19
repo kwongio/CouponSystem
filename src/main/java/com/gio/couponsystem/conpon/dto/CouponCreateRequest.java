@@ -44,9 +44,8 @@ public class CouponCreateRequest {
                 .build();
     }
 
-
     @AssertTrue(message = "종료일은 시작일 이후여야 합니다.")
-    @Schema(hidden = true) // Swagger 문서에서 숨김 처리
+    @Schema(hidden = true)
     public boolean isEndDateAfterStartDate() {
         if (startDate == null || endDate == null) {
             return true; // NotNull 검증이 우선 처리됨

@@ -4,15 +4,14 @@
 기간: 2024.12.09 ~ 2024.12.20
 
 ## **목차**
-
 1. [아키텍처](#1-아키텍처)
 2. [프로젝트 개요](#2-프로젝트-개요)
 3. [주요 기능](#3-주요-기능)
-4. [개발 목표 및 의도](#4-개발-목표-및-의도)
-5. [사용한 기술](#5-사용한-기술)
-6. [ERD (Entity-Relationship Model)](#6-erd-entity-relationship-model)
-7. [Kafka 설정](#7-kafka-설정)
-8. [시퀀스 다이어그램](#8-시퀀스-다이어그램)
+4. [선착순 쿠폰 발급 기능(시퀀스 다이어그램)](#4-선착순-쿠폰-발급-기능시퀀스-다이어그램)
+5. [개발 목표](#5-개발-목표)
+6. [사용한 기술](#6-사용한-기술)
+7. [ERD (Entity-Relationship Model)](#7-erd-entity-relationship-model)
+8. [Kafka 설정](#8-kafka-설정)
 9. [패키지 구조](#9-패키지-구조)
 10. [API 문서](#10-api-문서)
 11. [성능 테스트 및 결과](#11-성능-테스트-및-결과)
@@ -20,16 +19,16 @@
     - [시스템 성능 분석](#시스템-성능-분석)
 12. [관련 포트 정리](#12-관련-포트-정리)
 13. [프로젝트 관련 GitHub 리포지토리](#13-프로젝트-관련-github-리포지토리)
-15. [부족한 점](#14-부족한-점)
-14. [향후 계획](#15-향후-계획)
-
+14. [부족한 점](#14-부족한-점)
+15. [향후 계획](#15-향후-계획)
+16. 고민 과정(추가 예정)
+17. 트러블 슈팅(추가 예정)
 
 ## 1. 아키텍처
 
 ![스크린샷 2024-12-20 123420](https://github.com/user-attachments/assets/587c7b79-703b-4bf1-92ee-2eff232cf893)
 
 ## **2. 프로젝트 개요**
-
 
 - **프로젝트명**: 선착순 쿠폰 시스템
 - **목표**: 대규모 트래픽을 처리할 수 있는 쿠폰 시스템 설계 및 구현.
@@ -39,8 +38,25 @@
 - **선착순 쿠폰 발급**
 
 
+## 4. 선착순 쿠폰 발급 기능(시퀀스 다이어그램)
 
-## **4. 개발 목표**
+
+### 1. 쿠폰 발급 정상 처리
+![선착순쿠폰시스템-정상처리 drawio](https://github.com/user-attachments/assets/8afe0831-60f2-4481-8077-c3a6bc8801a9)
+
+### 2. Redis 쿠폰 개수 부족
+![선착순쿠폰시스템-Redis 실패 drawio](https://github.com/user-attachments/assets/af978863-3c9f-4369-aea4-d0df48b8bf57)
+
+### 3. Produce 실패(쿠폰 발급 이벤트 전송 실패)
+![선착순쿠폰시스템-Produce 실패 drawio (1)](https://github.com/user-attachments/assets/9d8ad36b-43b4-4596-9eea-66a143a99444)
+
+### 4. Consumer 실패(쿠폰 발급 실패)
+![선착순쿠폰시스템-Consumer 실패 drawio](https://github.com/user-attachments/assets/a0aad1bc-29af-4e8b-89a3-a96f81411327)
+
+
+
+
+## **5. 개발 목표**
 
 
 1. **EDA 기반 시스템 설계**
@@ -54,7 +70,7 @@
     - **JMeter**를 활용한 부하 테스트 및 병목 구간 분석.
     - 실시간 대규모 요청 처리에 대한 **성능 최적화 방안**을 학습
 
-## **5. 사용한 기술**
+## **6. 사용한 기술**
 
 | **분류** | **사용한 기술** |
 | --- | --- |
@@ -69,7 +85,7 @@
 | **Testing & API Documentation** | JUnit, JMeter, Swagger (springdoc-openapi) |
 | **Logging** | Logback (MDC 기반 traceId 설정, UUID를 사용한 요청별 고유 식별자 생성) |
 
-## 6. ERD (Entity-Relationship Model)
+## 7. ERD (Entity-Relationship Model)
 
 ![스크린샷 2024-12-20 122358](https://github.com/user-attachments/assets/04e3ec8e-f9ae-41e6-a3b8-08af783222b5)
 
@@ -93,7 +109,7 @@
 - **중복 발급 방지**를 위해, 쿠폰 발급 요청마다 고유한 **UUID**를 생성하여 이를 `unique key`로 지정했습니다.
 - UUID를 사용함으로써, 동일한 요청이 여러 번 처리되는 경우에도 **한 번만 발급**되도록 보장할 수 있습니다.
 
-## 7. Kafka 설정
+## 8. Kafka 설정
 
 
 ### Kafka 클러스터 구성
@@ -153,20 +169,6 @@
     - 한 번에 하나의 메시지만 처리
 - **Offset 설정**
     - `auto.offset.reset=earliest` *(가장 오래된 메시지부터 소비)*
-
-## 8. 시퀀스 다이어그램
-
-### 1. 쿠폰 발급 정상 처리
-![선착순쿠폰시스템-정상처리 drawio](https://github.com/user-attachments/assets/8afe0831-60f2-4481-8077-c3a6bc8801a9)
-
-### 2. Redis 쿠폰 개수 부족
-![선착순쿠폰시스템-Redis 실패 drawio](https://github.com/user-attachments/assets/af978863-3c9f-4369-aea4-d0df48b8bf57)
-
-### 3. Produce 실패(쿠폰 발급 이벤트 전송 실패)
-![선착순쿠폰시스템-Produce 실패 drawio](https://github.com/user-attachments/assets/487e9826-70cd-48c5-8469-14725230d669)
-
-### 4. Consumer 실패(쿠폰 발급 실패)
-![선착순쿠폰시스템-Consumer 실패 drawio](https://github.com/user-attachments/assets/a0aad1bc-29af-4e8b-89a3-a96f81411327)
 
 
 ## 9. 패키지 구조
@@ -286,7 +288,7 @@ CouponSystem
 ### **시스템 성능 분석**
 
 - **CPU 사용량**:
-    - **System CPU Usage**: 테스트 시 시스템 CPU 사용량 **100%**에 도달. 이는 로컬 환경에서 부하가 발생했기 때문이며, 성능적으로 정확한 측정은 어려운 부분이 있지만, 부하가 예상보다 잘 처리됨.
+    - **System CPU Usage**: 테스트 시 시스템 CPU 사용량 100%에 도달. 이는 로컬 환경에서 부하가 발생했기 때문이며, 성능적으로 정확한 측정은 어려운 부분이 있지만, 부하가 예상보다 잘 처리됨.
     - **Spring CPU Usage**: Spring 프로세스 CPU 사용량은 비교적 낮았으며, 예상보다 성능을 잘 유지함.
 - **Consumer Group Lag**:
     - **Lag 현상**: 테스트 초기에는 일부 lag이 쌓였지만, **Consumer 서버에서 정상적으로 처리**되어 lag 없이 완료됨.

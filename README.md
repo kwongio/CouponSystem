@@ -377,7 +377,6 @@ CouponSystem
 | Kafka Broker 3 | Kafka 세 번째 브로커 | localhost:9094 |
 | Zookeeper | Kafka Zookeeper 서비스 | localhost:32181 |
 
----
 
 ### **데이터베이스 관련 포트**
 

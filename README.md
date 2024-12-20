@@ -32,26 +32,11 @@
 
 
 - **프로젝트명**: 선착순 쿠폰 시스템
-- **목표**: 짧은 시간 내에 대규모 트래픽을 처리할 수 있는 쿠폰 시스템 설계 및 구현.
+- **목표**: 대규모 트래픽을 처리할 수 있는 쿠폰 시스템 설계 및 구현.
 
 ## **3. 주요 기능**
 
-
-1. **선착순 쿠폰 생성**
-    - 사용자 요청에 따라 선착순 쿠폰을 생성할 수 있는 기능.
-    - **Kafka**를 이용하여 쿠폰 생성 이벤트를 비동기적으로 처리.
-2. **쿠폰 조회 및 할당**
-    - **쿠폰 조회**: 사용자가 발급한 쿠폰을 조회할 수 있는 기능.
-    - **쿠폰 할당**: 선착순 기준으로 쿠폰을 할당하는 기능.
-3. **Kafka, Redis 기반 아키텍처**
-    - **Kafka**를 이용한 이벤트 기반 시스템 설계.
-    - **Redis**를 활용하여 쿠폰의 상태와 카운트를 관리하고 빠른 조회 성능 제공.
-4. **성능 모니터링 및 APM 분석**
-    - **Grafana**와 **Pinpoint**를 이용한 시스템 모니터링 및 성능 분석.
-    - **Prometheus**와 **Grafana**를 통한 실시간 메트릭 수집 및 대시보드 구성.
-5. **성능 테스트**
-    - **JMeter**를 사용한 부하 테스트와 시스템 성능 분석.
-    - 시스템의 병목 구간 파악 및 최적화 수행.
+- **선착순 쿠폰 발급**
 
 
 
@@ -82,7 +67,7 @@
 | **Exporters** | mysql-exporter, redis-exporter, kafka-exporter |
 | **APM (Application Performance Management)** | Pinpoint |
 | **Testing & API Documentation** | JUnit, JMeter, Swagger (springdoc-openapi) |
-| **Logging & Filtering** | Logback (MDC 기반 traceId 설정, UUID를 사용한 요청별 고유 식별자 생성) |
+| **Logging** | Logback (MDC 기반 traceId 설정, UUID를 사용한 요청별 고유 식별자 생성) |
 
 ## 6. ERD (Entity-Relationship Model)
 
@@ -95,7 +80,7 @@
     - `ID`: 쿠폰의 기본 키 (자동 증가).
     - `TITLE`: 쿠폰의 제목.
     - `QUANTITY`: 쿠폰의 총 수량.
-    - `START_DATE`, `END_DATE`: 쿠폰의 유효 기간.
+    - `START_DATE`, `END_DATE`: 쿠폰 시작 및 종료일.
     - `CREATED_AT`: 쿠폰 생성일.
 - **CouponAssignLog 테이블**: 쿠폰 발급 이력을 저장.
     - `ID`: 쿠폰 발급 기록의 기본 키 (자동 증가).
@@ -194,7 +179,7 @@ CouponSystem
 │   ├── docker-compose-kafka-ui.yml                       # Kafka UI를 설정하기 위한 Docker Compose 파일.
 │   ├── docker-compose-monitoring.yml                     # Prometheus와 Grafana 기반의 모니터링을 설정하기 위한 Docker Compose 파일.
 │   └── docker-compose-ngrinder.yml                       # 성능 테스트를 위한 nGrinder Docker Compose 파일.
-├── pinpoint-agent-2.5.4                                  # Pinpoint 에이전트 디렉토리, 애플리케이션 성능 모니터링 설정을 포함.
+├── pinpoint-agent-2.5.4                                  # Pinpoint Agent 파일.
 ├── pinpoint-docker-2.5.3                                 # Pinpoint 서버 설정 및 Docker 관련 파일이 포함된 디렉토리.
 └── src                                                   
     ├── main                                             
@@ -232,7 +217,7 @@ CouponSystem
     │   │               │   │      CouponQueryResponse.java      # 쿠폰 조회 응답 데이터를 담는 DTO.
     │   │               │   │      
     │   │               │   ├── repository
-    │   │               │   │      CouponProducer.java           # Kafka 프로듀서 인터페이스.
+    │   │               │   │      CouponProducer.java           # 쿠폰 발급 Kafka 프로듀서 클래스.
     │   │               │   │      CouponRepository.java         # 쿠폰 데이터를 관리하는 JPA 레포지토리.
     │   │               │   │      
     │   │               │   ├── service
@@ -240,7 +225,7 @@ CouponSystem
     │   │               │   │      
     │   │               │   └── validator
     │   │               │           CouponValidator.java         # 쿠폰 데이터 유효성 검증 로직.
-    │   │               │           Validator.java               # Spring의 합성 어노테이션으로, 특정 클래스에 검증 컴포넌트로 등록.
+    │   │               │           Validator.java               # 유효성 검증 커스텀 어노테이션
     │   │               │          
     │   │               ├── event
     │   │               │      CouponAssignEvent.java            # 쿠폰 할당 이벤트 클래스.

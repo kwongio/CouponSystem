@@ -395,7 +395,7 @@ CouponSystem
 | 2 | consumer | Kafka Consumer 관련 서비스 및 처리 로직 | https://github.com/kwongio/consumer |
 
 
-## **14. 부족한 점**
+## 14. 부족한 점
 
 1. **로그 관리 시스템 부재**
     - **MDC**를 사용하여 트레이스 ID를 설정했지만, **ELK 스택**(Elasticsearch, Logstash, Kibana)이 없어서 **로그 검색**과 **시각화**가 이루어지지 않았습니다. 향후 ELK를 도입하여 **효율적인 로그 관리**와 **빠른 오류 추적**을 개선할 필요가 있습니다.
@@ -404,7 +404,11 @@ CouponSystem
 3. **Redis와 MySQL의 Replication 미적용**  
    - Redis와 MySQL에서 Replication을 적용하지 않아, 데이터의 시스템 안정성에 한계가 있었습니다. 향후 Redis 클러스터와 MySQL Replication을 도입하여 시스템 안정성을 높이고, 데이터 처리 성능을 향상시킬 계획입니다.
 
-## **15. 향후 계획**
+## 15. 향후 계획
 
 - **새로운 프로젝트 개발**:
     - **주문 내역 시스템**을 개발하여, **일간 100만 건** 정도의 데이터가 처리되는 시스템을 목표로 설정.
+
+## 16. 고민 과정(추가 예정)
+
+## 17. 트러블 슈팅(추가 예정)

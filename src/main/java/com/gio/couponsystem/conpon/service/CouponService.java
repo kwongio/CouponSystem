@@ -42,7 +42,7 @@ public class CouponService {
         if (remainCouponCount < 0) {
             throw new CustomException(ExceptionCode.COUPON_OUT_OF_STOCK);
         }
-        throwTestException(remainCouponCount);
+//        throwTestException(remainCouponCount);
         couponProducer.sendAssignCouponRequest(new CouponAssignEvent(couponId, UUID.randomUUID()));
     }
 

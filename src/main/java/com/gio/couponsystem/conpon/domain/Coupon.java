@@ -34,11 +34,11 @@ public class Coupon {
     private long quantity;
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP NOT NULL")
-    @Comment("쿠폰 유효 시작일")
+    @Comment("쿠폰 시작일")
     private LocalDateTime startDate;
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP NOT NULL")
-    @Comment("쿠폰 유효 종료일")
+    @Comment("쿠폰 종료일")
     private LocalDateTime endDate;
 
     @Comment("쿠폰 생성일")

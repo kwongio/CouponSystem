@@ -1,12 +1,10 @@
 # **프로젝트 주제: 선착순 쿠폰 발급 시스템**
 
----
 
 기간: 2024.12.09 ~ 2024.12.20
 
 ## **목차**
 
----
 1. [아키텍처](#1-아키텍처)
 2. [프로젝트 개요](#2-프로젝트-개요)
 3. [주요 기능](#3-주요-기능)
@@ -28,19 +26,16 @@
 
 ## 1. 아키텍처
 
----
 ![스크린샷 2024-12-20 123420](https://github.com/user-attachments/assets/587c7b79-703b-4bf1-92ee-2eff232cf893)
 
 ## **2. 프로젝트 개요**
 
----
 
 - **프로젝트명**: 선착순 쿠폰 시스템
 - **목표**: 짧은 시간 내에 대규모 트래픽을 처리할 수 있는 쿠폰 시스템 설계 및 구현.
 
 ## **3. 주요 기능**
 
----
 
 1. **선착순 쿠폰 생성**
     - 사용자 요청에 따라 선착순 쿠폰을 생성할 수 있는 기능.
@@ -62,7 +57,6 @@
 
 ## **4. 개발 목표**
 
----
 
 1. **EDA 기반 시스템 설계**
     - **Kafka**와 **Redis**를 활용하여 **Event-Driven Architecture**(EDA) 기반의 시스템 설계 및 구현 학습.
@@ -77,7 +71,6 @@
 
 ## **5. 사용한 기술**
 
----
 | **분류** | **사용한 기술** |
 | --- | --- |
 | **Backend** | Spring Boot 3.x, Java 17, Spring Data JPA, Lombok, Validation, REST API |
@@ -117,7 +110,6 @@
 
 ## 7. Kafka 설정
 
----
 
 ### Kafka 클러스터 구성
 ![스크린샷 2024-12-20 132546](https://github.com/user-attachments/assets/5edd41ff-b1ac-4ae2-913e-5c5505fa8749)
@@ -127,7 +119,6 @@
 - **Kafka 브로커 서버**: 3대
 - **`min.insync.replicas=2`***(최소 2개의 복제본이 동기화된 상태에서만 메시지가 성공적으로 전송)*
 
----
 
 ### 2. Topic 설정
 
@@ -138,7 +129,6 @@
     - 파티션 수: 3
     - 복제본 수: 3
 
----
 
 ### 3. API 서버 설정
 
@@ -157,7 +147,6 @@
 - **에러 처리**
     - **쿠폰 발급 실패 시**: 메시지는 Dead Letter Queue(Coupon-Assign-DLT)로 전송.
 
----
 
 ### 4. Consumer 서버 설정
 
@@ -172,7 +161,6 @@
     - Exponential Backoff *(초기 간격 1초, 2배 증가, 최대 5회 재시도)*
     - 실패 메시지는 Dead Letter Queue(Coupon-Assign-DLT)로 전송
 
----
 
 **Coupon-Assign-DLT** *(개별 처리)*
 
@@ -182,8 +170,6 @@
     - `auto.offset.reset=earliest` *(가장 오래된 메시지부터 소비)*
 
 ## 8. 시퀀스 다이어그램
-
----
 
 ### 1. 쿠폰 발급 정상 처리
 ![선착순쿠폰시스템-정상처리 drawio](https://github.com/user-attachments/assets/8afe0831-60f2-4481-8077-c3a6bc8801a9)
@@ -199,8 +185,6 @@
 
 
 ## 9. 패키지 구조
-
----
 
 ```jsx
 CouponSystem
@@ -296,14 +280,10 @@ CouponSystem
 
 ## 10. API 문서
 
----
 ![스크린샷 2024-12-20 181240](https://github.com/user-attachments/assets/5de14349-489a-45b2-8ad8-eb8f410c0ccd)
 
 
-
 ## **11. 성능 테스트 및 결과**
-
----
 
 ### **JMeter를 사용한 트래픽 시뮬레이션**
 
@@ -317,7 +297,6 @@ CouponSystem
     - **최대 응답 시간**: **279ms**
     - **표준편차**: **57.89ms**
 
----
 
 ### **시스템 성능 분석**
 
@@ -364,8 +343,6 @@ CouponSystem
 
 ## 12. 시스템 포트 설정
 
----
-
 ### **UI 및 애플리케이션 관련 포트**
 
 | **서비스 이름** | **설명** | **주소** |
@@ -377,7 +354,6 @@ CouponSystem
 | Grafana | 메트릭 대시보드 및 모니터링 툴 | [http://localhost:3000](http://localhost:3000/) |
 | Pinpoint Web | Pinpoint APM 관리 웹 인터페이스 | [http://localhost:8082](http://localhost:8082/) |
 
----
 
 ### **애플리케이션 관련 포트**
 
@@ -385,7 +361,6 @@ CouponSystem
 | --- | --- | --- |
 | Prometheus Endpoint | Spring Prometheus 메트릭 엔드포인트 | http://localhost:8080/actuator/prometheus |
 
----
 
 ### **모니터링 관련 포트**
 
@@ -395,7 +370,6 @@ CouponSystem
 | MySQL Exporter | Prometheus와 연동된 MySQL 메트릭 | [http://localhost:9104](http://localhost:9104/) |
 | Kafka Exporter | Prometheus와 연동된 Kafka 메트릭 | [http://localhost:9308](http://localhost:9308/) |
 
----
 
 ### **Pinpoint 관련 포트**
 
@@ -406,7 +380,6 @@ CouponSystem
 | Pinpoint MySQL | Pinpoint 데이터 저장소 | [http://localhost:3308](http://localhost:3308/) |
 | Pinpoint HBase | Pinpoint HBase 데이터베이스 서비스 | [http://localhost:16010](http://localhost:16010/) |
 
----
 
 ### **Kafka 및 Zookeeper 관련 포트**
 
@@ -430,8 +403,6 @@ CouponSystem
 
 ## 13. 프로젝트 관련 GitHub 리포지토리
 
----
-
 | **No** | **Repository Name** | **Description** | **URL** |
 | --- | --- | --- | --- |
 | 1 | CouponSystem | 선착순 쿠폰 시스템의 메인 애플리케이션 | https://github.com/kwongio/CouponSystem |
@@ -439,8 +410,6 @@ CouponSystem
 
 
 ## **14. 부족한 점**
-
----
 
 1. **로그 관리 시스템 부재**
     - **MDC**를 사용하여 트레이스 ID를 설정했지만, **ELK 스택**(Elasticsearch, Logstash, Kibana)이 없어서 **로그 검색**과 **시각화**가 이루어지지 않았습니다. 향후 ELK를 도입하여 **효율적인 로그 관리**와 **빠른 오류 추적**을 개선할 필요가 있습니다.
@@ -450,8 +419,6 @@ CouponSystem
     - **Redis**와 **MySQL**에서 **Replication**을 적용하지 않아, 데이터의 **중복성**과 **가용성**에 한계가 있었습니다. 향후 **Redis 클러스터**와 **MySQL Replication**을 도입하여 **가용성**을 높이고, 데이터 처리 성능을 향상시킬 계획입니다.
 
 ## **15. 향후 계획**
-
----
 
 - **새로운 프로젝트 개발**:
     - **주문 내역 시스템**을 개발하여, **일간 100만 건** 정도의 데이터가 처리되는 시스템을 목표로 설정.

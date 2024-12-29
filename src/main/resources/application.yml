@@ -15,9 +15,6 @@ spring:
       host: localhost
       port: 6379
 
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: UTC
 
   jpa:
     hibernate:
